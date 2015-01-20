@@ -455,6 +455,9 @@ class GUMP
 				case 'validate_alpha_dash':
 					$resp[] = "The <span class=\"$field_class\">$field</span> field may only contain alpha characters &amp; dashes";
 					break;
+				case 'validate_sentence':
+					$resp[] = "The <span class=\"$field_class\">$field</span> field may only contain alpha-numeric characters &amp; basic punctuation, spaces and dashes";
+					break;
 				case 'validate_numeric':
 					$resp[] = "The <span class=\"$field_class\">$field</span> field may only contain numeric characters";
 					break;
@@ -585,6 +588,9 @@ class GUMP
 					break;
 				case 'validate_alpha_dash':
 					$resp[$field] = "The $field field may only contain alpha characters &amp; dashes";
+					break;
+				case 'validate_sentence':
+					$resp[$field] = "The $field field may only contain alpha-numeric characters &amp; basic punctuation, spaces and dashes";
 					break;
 				case 'validate_numeric':
 					$resp[$field] = "The $field field may only contain numeric characters";
@@ -1299,6 +1305,33 @@ class GUMP
 		}
 	}
 
+	/**
+	 * Determine if the provided value contains only alpha_numeric characters with dashed and underscores and commas and spaces and fullstops
+	 *
+	 * Usage: '<index>' => 'sentence'
+	 *
+	 * @access protected
+	 * @param  string $field
+	 * @param  array $input
+	 * @return mixed
+	 */
+	protected function validate_sentence($field, $input, $param = NULL)
+	{
+		if(!isset($input[$field]) || empty($input[$field]))
+		{
+			return;
+		}
+		if(!preg_match("/^([a-z0-9ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÒÓÔÕÖÙÚÛÜÝàáâãäåçèéêëìíîïðòóôõöùúûüýÿ_-\s,\.\'])+$/i", $input[$field]) !== FALSE)
+		{
+			return array(
+				'field' => $field,
+				'value' => $input[$field],
+				'rule'  => __FUNCTION__,
+				'param' => $param
+			);
+		}
+	}
+	
 	/**
 	 * Determine if the provided value is a valid number or numeric string
 	 *
